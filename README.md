@@ -35,9 +35,62 @@ This repo sets up a graph database with vector index, performing normal and hybr
    ```
 
 ## Project Structure
-main.py: Main script for setting up the environment, querying, and performing hybrid search.
-milvus_utils.py: Utility functions for interacting with Milvus.
-neo4j_utils.py: Utility functions for interacting with Neo4j.
-data/wikipedia_content.json: Example data file (ensure this file is available or provide your own dataset).
-data/get_data.py: Script to fetch and save Wikipedia content as JSON.
-data/bm25_model.pkl: Pretrained BM25 model to speed up hybrid search.
+- main.py: Main script for setting up the environment, querying, and performing search.
+- milvus_utils.py: Utility functions for interacting with Milvus.
+- neo4j_utils.py: Utility functions for interacting with Neo4j.
+- data/wikipedia_content.json: Current data file.
+- data/get_data.py: Script to fetch and save Wikipedia content as JSON.
+- data/bm25_model.pkl: Pretrained BM25 model using existing data to speed up hybrid search.
+
+## Data Storage
+### Neo4j
+Neo4j is used as the primary data store for the actual text content. Each document and paragraph has a unique ID which is stored in Neo4j. The structure in Neo4j is:
+
+Page nodes represent the individual Wikipedia pages.
+Paragraph nodes represent the paragraphs within each page.
+HAS_PARAGRAPH relationships link Pages to their Paragraphs.
+
+![Alt text](./data/image.png)
+
+### Milvus
+Milvus is used as the vector index to perform fast similarity searches on paragraph embeddings. Each paragraph's embedding is stored in Milvus with the same ID as the one in Neo4j. This allows linking the results from Milvus back to the actual content in Neo4j.
+
+### Linking Neo4j and Milvus
+Paragraph IDs in Neo4j are the same as those in Milvus.
+During a search, Milvus provides the IDs of the relevant paragraphs, which are then used to fetch the actual content from Neo4j.
+
+
+## How to run 
+### Setup
+To set up the environment, load data into Neo4j and Milvus:
+
+```bash
+python main.py setup
+```
+
+### Normal Query
+To perform a vector-based search:
+```bash
+python main.py query "<your query text>"
+```
+
+### Hybrid Query
+To perform a hybrid search combining vector embeddings and BM25 using RRF:
+
+```bash
+python main.py hybrid_query "<your query text>" 
+``` 
+Note: The hybrid query can be slow. A locally trained BM25 model is included (data/bm25_model.pkl). If deleted, it will be retrained from scratch, which takes a long time.
+
+### Cleanup
+To delete all data from Neo4j and Milvus:
+```bash
+python main.py cleanup
+```
+
+### Data Preparation
+To fetch and save Wikipedia content as JSON:
+```bash
+python data/get_data.py
+```
+This will extract content from a list of Wikipedia URLs, chunk the text by paragraphs, and save it as wikipedia_content.json.

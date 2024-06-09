@@ -1,0 +1,13 @@
+/.vscode/
+/venv_graph/
+/volumes/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.sqlite3
+*.db
+*.dat
+*.log
+*.csv
+*.json
