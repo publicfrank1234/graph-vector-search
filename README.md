@@ -74,6 +74,16 @@ To perform a vector-based search:
 python main.py query "<your query text>"
 ```
 
+Example
+```bash
+(venv_graph) % python main.py query "war"           
+Connected to Neo4j
+Connected to Milvus
+Searching for: war
+Milvus/Neo4j ID: 228, Distance: 54.77064514160156
+Paragraph: All military campaigns were preceded by careful planning, reconnaissance, and the gathering of sensitive information relating to enemy territories and forces. The success, organization, and mobility of the Mongol armies permitted them to fight on several fronts at once. All adult males up to the age of 60 were eligible for conscription into the army, a source of honor in their tribal warrior tradition.
+```
+
 ### Hybrid Query
 To perform a hybrid search combining vector embeddings and BM25 using RRF:
 
